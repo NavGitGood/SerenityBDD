@@ -10,7 +10,7 @@ public class APIRequestMaker {
         SerenityRest.given()
                 .queryParam("q", query)
                 .queryParam("api-key", apiKey)
-                .relaxedHTTPSValidation().when().get(url);
+                .when().get(url);
     }
 
     @Step("")
@@ -19,14 +19,14 @@ public class APIRequestMaker {
                 .queryParam("q", query)
                 .queryParam("api-key", apiKey)
                 .queryParam("sort", sortAs)
-                .relaxedHTTPSValidation().when().get(url);
+                .when().get(url);
     }
 
     @Step("")
     public void makeGetRequest(String url, String query) {
         SerenityRest.given()
                 .queryParam("q", query)
-                .relaxedHTTPSValidation().when().get(url);
+                .when().get(url);
     }
 
 }
