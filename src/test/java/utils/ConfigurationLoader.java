@@ -13,7 +13,6 @@ import java.util.Properties;
 public class ConfigurationLoader {
 
     private static Properties properties;
-    public static final String somevalue = "";
 
     @Step("read")
     public void readProperties() {
