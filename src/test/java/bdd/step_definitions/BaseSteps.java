@@ -43,39 +43,45 @@ public class BaseSteps {
                 configurationLoader.getPropertyValue("articleSearch");
     }
 
-    @When("api is called using {string} as query parameter and valid apikey")
-    public void queryArticleWithValidAuth(String queryParam) {
-        apiRequestMaker.makeGetRequest(
-                url,
-                queryParam,
-                System.getenv("NYT_Access_Token")
+    @When("api is called with valid apikey")
+    public void queryArticleWithValidAuth() {
+        apiRequestMaker.makeAuthorisedGetRequest(
+                url
         );
     }
 
-    @When("api is called using {string} as query parameter and invalid apikey")
-    public void queryArticleWithInValidAuth(String queryParam) {
-        apiRequestMaker.makeGetRequest(
+    @When("api is called with invalid apikey")
+    public void queryArticleWithInValidAuth() {
+        apiRequestMaker.makeGetRequestWithAuthKeyAsParam(
                 url,
-                queryParam,
                 invalidKey
         );
     }
 
-    @When("api is called using {string} as query parameter and no apikey")
-    public void queryArticleWithNoAuth(String queryParam) {
-        apiRequestMaker.makeGetRequest(
-                url,
-                queryParam
+    @When("api is called with no apikey")
+    public void queryArticleWithNoAuth() {
+        apiRequestMaker.makeGetRequestNoAuth(
+                url
         );
     }
 
-    @When("api is called using {string} as query parameter, valid apikey and sort value as {string}")
-    public void queryArticleWithValidAuthAndSort(String queryParam, String sortAs) {
-        apiRequestMaker.makeGetRequest(
+    @When("api is called with query parameter {string} and value {string}")
+    public void queryArticleWithQueryParameter(String queryParamKey, String queryParamValue) {
+        apiRequestMaker.makeAuthorisedGetRequest(
                 url,
-                queryParam,
-                System.getenv("NYT_Access_Token"),
-                sortAs
+                queryParamKey,
+                queryParamValue
+        );
+    }
+
+    @When("api is called with query parameter {string} having value {string} and query parameter {string} having value {string}")
+    public void queryArticleWithQueryParameters(String queryParamKey1, String queryParamValue1, String queryParamKey2, String queryParamValue2) {
+        apiRequestMaker.makeAuthorisedGetRequest(
+                url,
+                queryParamKey1,
+                queryParamValue1,
+                queryParamKey2,
+                queryParamValue2
         );
     }
 
@@ -105,10 +111,23 @@ public class BaseSteps {
     @Then("the records should be ordered in ascending publishing date")
     public void assertResponseOrderAscending() {
         Response response = then().extract().response();
-        List<String> pub_date = response.jsonPath().getList("response.docs.pub_date");
+        List<String> pub_date_list = response.jsonPath().getList("response.docs.pub_date");
         assertThat(
-                pub_date.stream().sorted().collect(Collectors.toList()).equals(pub_date),
+                pub_date_list.stream().sorted().collect(Collectors.toList()).equals(pub_date_list),
                 is(true)
+        );
+    }
+
+    @Then("all the records should be from year {string}")
+    public void assertResponseFromYear(String year) {
+        Response response = then().extract().response();
+        List<String> pub_date_list = response.jsonPath().getList("response.docs.pub_date");
+        assertThat(
+                pub_date_list
+                        .stream()
+                        .map(pub_date -> pub_date.split("-")[0])
+                .collect(Collectors.toList()),
+                everyItem(is(year))
         );
     }
 
