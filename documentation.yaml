@@ -1,0 +1,253 @@
+---
+host: api.nytimes.com
+basePath: "/svc/search/v2"
+schemes:
+  - https
+consumes:
+- application/json
+info:
+  description: Search for NYT articles by keywords, filters and facets.
+  title: Get NYT Articles
+  version: '2.0'
+paths:
+  "/articlesearch.json":
+    get:
+      description: Returns a list of articles
+      parameters:
+      - description: keyword to be used for searching (e.g. election)
+        in: query
+        name: q
+        required: false
+        type: string
+      - description: sorting on article publication date
+        in: query
+        name: sort
+        required: false
+        type: string
+        enum:
+          - newest
+          - oldest
+          - relevance
+      - description: Begin date (e.g. 20120101)
+        in: query
+        name: begin_date
+        required: false
+        type: string
+        pattern: "^\\d{8}$"
+      - description: End date (e.g. 20120101)
+        in: query
+        name: end_date
+        required: false
+        type: string
+        pattern: "^\\d{8}$"
+      - description: Whether to show facet counts
+        in: query
+        name: facet
+        required: false
+        type: boolean
+        enum:
+        - false
+        - true
+      - description: Facets
+        in: query
+        name: facet_fields
+        required: false
+        type: string
+        enum:
+        - day_of_week
+        - document_type
+        - ingredients
+        - news_desk
+        - pub_month
+        - pub_year
+        - section_name
+        - source
+        - subsection_name
+        - type_of_material
+      - description: Have facet counts use filters
+        in: query
+        name: facet_filter
+        required: false
+        type: boolean
+        enum:
+        - false
+        - true
+      - description: Field list
+        in: query
+        name: fl
+        required: false
+        type: string
+      - description: Filter query
+        in: query
+        name: fq
+        required: false
+        type: string
+      - description: Page number (0, 1, ...)
+        in: query
+        name: page
+        required: false
+        minimum: 0
+        maximum: 100
+        type: integer
+      responses:
+        '200':
+          description: An array of articles.
+          schema:
+            type: object
+            properties:
+              status:
+                type: string
+              copyright:
+                type: string
+              response:
+                type: object
+                properties:
+                  docs:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        abstract:
+                          type: string
+                        web_url:
+                          type: string
+                        snippet:
+                          type: string
+                        lead_paragraph:
+                          type: string
+                        source:
+                          type: string
+                        multimedia:
+                          type: array
+                          items:
+                            type: object
+                            properties:
+                              rank:
+                                type: string
+                              subtype:
+                                type: string
+                              caption:
+                                type: string
+                              credit:
+                                type: string
+                              type:
+                                type: string
+                              url:
+                                type: string
+                              height:
+                                type: number
+                              width:
+                                type: number
+                              legacy:
+                                type: object
+                                properties:
+                                  xlarge:
+                                    type: string
+                                  xlargewidth:
+                                    type: number
+                                  xlargeheight:
+                                    type: number
+                              subType:
+                                type: string
+                              crop_name:
+                                type: string
+                        headline:
+                          type: object
+                          properties:
+                            main:
+                              type: string
+                            kicker:
+                              type: string
+                            content_kicker:
+                              type: string
+                            print_headline:
+                              type: string
+                            name:
+                              type: string
+                            seo:
+                              type: string
+                            sub:
+                              type: string
+                        keywords:
+                          type: array
+                          items:
+                            type: object
+                            properties:
+                              name:
+                                type: string
+                              value:
+                                type: string
+                              rank:
+                                type: number
+                              major:
+                                type: string
+                        pub_date:
+                          type: string
+                        document_type:
+                          type: string
+                        news_desk:
+                          type: string
+                        section_name:
+                          type: string
+                        byline:
+                          type: object
+                          properties:
+                            original:
+                              type: string
+                            person:
+                              type: array
+                              items:
+                                type: object
+                                properties:
+                                  firstname:
+                                    type: string
+                                  middlename:
+                                    type: string
+                                  lastname:
+                                    type: string
+                                  qualifier:
+                                    type: string
+                                  title:
+                                    type: string
+                                  role:
+                                    type: string
+                                  organization:
+                                    type: string
+                                  rank:
+                                    type: number
+                            organization:
+                              type: string
+                        type_of_material:
+                          type: string
+                        _id:
+                          type: string
+                        word_count:
+                          type: number
+                        uri:
+                          type: string
+                  meta:
+                    type: object
+                    properties:
+                      hits:
+                        type: number
+                      offset:
+                        type: string
+                      time:
+                        type: number
+        '401':
+          description: Unauthorized request. Make sure api-key is set.
+        '403':
+          description: Too many requests.  You reached your per minute or per day rate limit.
+      summary: Return list of articles
+      tags:
+      - Articles
+securityDefinitions:
+   APIKeyQueryParam:
+     type: apiKey
+     in: query
+     name: api-key
+security:
+  - APIKeyQueryParam: []
+produces:
+- application/json
+swagger: '2.0'

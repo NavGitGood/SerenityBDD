@@ -1,4 +1,4 @@
-package bdd;
+ package bdd;
 
 import io.cucumber.junit.CucumberOptions;
 import net.serenitybdd.cucumber.CucumberWithSerenity;
@@ -9,7 +9,8 @@ import org.junit.runner.RunWith;
 //        dryRun = true,
         plugin = {"pretty"},
         features = "classpath:features",
-        glue = "bdd.step_definitions"
+        glue = "bdd.step_definitions",
+        tags = "not @ignore"
 )
 public class TestRunner {
 
