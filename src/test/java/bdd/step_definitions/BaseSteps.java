@@ -9,8 +9,10 @@ import net.thucydides.core.annotations.Steps;
 import utils.APIRequestMaker;
 import utils.ConfigurationLoader;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import static net.serenitybdd.rest.SerenityRest.restAssuredThat;
@@ -66,7 +68,18 @@ public class BaseSteps {
     }
 
     @When("api is called with query parameter {string} and value {string}")
+    @When("api is called with query parameter {string} having valid value {string}")
+    @When("api is called with query parameter {string} having invalid value {string}")
     public void queryArticleWithQueryParameter(String queryParamKey, String queryParamValue) {
+        apiRequestMaker.makeAuthorisedGetRequest(
+                url,
+                queryParamKey,
+                queryParamValue
+        );
+    }
+
+    @When("api is called with query parameter {string} having numeric value {int} instead of string")
+    public void queryArticleWithBadQueryParameterValue(String queryParamKey, Integer queryParamValue) {
         apiRequestMaker.makeAuthorisedGetRequest(
                 url,
                 queryParamKey,
@@ -128,6 +141,23 @@ public class BaseSteps {
                         .map(pub_date -> pub_date.split("-")[0])
                 .collect(Collectors.toList()),
                 everyItem(is(year))
+        );
+    }
+
+    @Then("the records should only have {string} field inside docs")
+    public void assertExactProperty(String field) {
+        Response response = then().extract().response();
+        List<Map<String, String >> doc_arr = response.jsonPath().getList("response.docs");
+
+        assertThat(
+                doc_arr
+                        .stream()
+                        .map(doc -> new ArrayList<>(doc.keySet()))
+                        .collect(Collectors.toList())
+                        .stream()
+                        .flatMap(List::stream)
+                        .collect(Collectors.toList()),
+                everyItem(is(field))
         );
     }
 

@@ -1,4 +1,5 @@
-Feature: Authenticated Article Search
+@positive
+Feature: Positive Scenario
 
   Scenario: Article Search - no query parameter
     Given the base url for NYT REST API and article endpoint
@@ -26,3 +27,20 @@ Feature: Authenticated Article Search
     Given the base url for NYT REST API and article endpoint
     When api is called with query parameter "begin_date" having value "19900101" and query parameter "end_date" having value "19900101"
     Then all the records should be from year "1990"
+
+  Scenario: Article Search - with filter list
+    Given the base url for NYT REST API and article endpoint
+    When api is called with query parameter "fl" and value "abstract"
+    Then the records should only have "abstract" field inside docs
+
+  Scenario Outline: Valid parameter value
+    Given the base url for NYT REST API and article endpoint
+    When api is called with query parameter <queryParamKey> having valid value <queryParamValue>
+    Then the response should be 200
+
+    Examples:
+      | queryParamKey  | queryParamValue |
+      | "sort"         | "newest"        |
+      | "sort"         | "oldest"        |
+      | "facet"        | "false"         |
+      | "facet_filter" | "false"         |

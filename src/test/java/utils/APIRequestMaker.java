@@ -34,6 +34,14 @@ public class APIRequestMaker {
     }
 
     @Step("")
+    public void makeAuthorisedGetRequest(String url, String queryParamKey, Integer queryParamValue) {
+        SerenityRest.given()
+                .queryParam(queryParamKey, queryParamValue)
+                .queryParam("api-key", System.getenv("NYT_Access_Token"))
+                .when().get(url);
+    }
+
+    @Step("")
     public void makeAuthorisedGetRequest(String url, String queryParamKey1, String queryParamValue1, String queryParamKey2, String queryParamValue2) {
         SerenityRest.given()
                 .queryParam(queryParamKey1, queryParamValue1)

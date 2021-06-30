@@ -10,7 +10,7 @@ import org.junit.runner.RunWith;
         plugin = {"pretty"},
         features = "classpath:features",
         glue = "bdd.step_definitions",
-        tags = "not @ignore"
+        tags = "@positive"
 )
 public class TestRunner {
 
