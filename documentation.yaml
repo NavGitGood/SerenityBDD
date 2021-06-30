@@ -28,13 +28,13 @@ paths:
           - newest
           - oldest
           - relevance
-      - description: Begin date (e.g. 20120101)
+      - description: Begin date - YYYYMMDD (e.g. 20120101)
         in: query
         name: begin_date
         required: false
         type: string
         pattern: "^\\d{8}$"
-      - description: End date (e.g. 20120101)
+      - description: End date - YYYYMMDD (e.g. 20120101)
         in: query
         name: end_date
         required: false
@@ -72,7 +72,7 @@ paths:
         enum:
         - false
         - true
-      - description: Field list
+      - description: Field list - to return only a particular field in response (e.g. Article)
         in: query
         name: fl
         required: false
